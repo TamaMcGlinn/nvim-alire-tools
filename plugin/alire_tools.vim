@@ -1,1 +1,1 @@
-command! AlirePublish call luaeval("require'alire_tools'.publish()")
+command! -bang AlirePublish call luaeval("require'alire_tools'.publish(" .. <bang>0 .. ")")

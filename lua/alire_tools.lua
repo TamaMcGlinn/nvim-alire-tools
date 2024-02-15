@@ -245,9 +245,9 @@ local function find_non_origin_remote(alire_community_repo_path)
   local remotes = split(git("remote -v", alire_community_repo_path), '\n')
   for _, line in ipairs(remotes) do
     if line:match("origin") then
-      print("Origin is " .. line)
+      -- print("Origin is " .. line)
     else
-      print("Non-origin remote is " .. line)
+      -- print("Non-origin remote is " .. line)
       local remote_line = split(line, '%s')
       return {name = remote_line[1], url = remote_line[2]}
     end
@@ -272,7 +272,7 @@ local function publish_toml_file(alire_toml, skip_project_push)
   local containing_dir = parent_of(alire_toml)
   local git_show_toplevel = git_ignore_errors("rev-parse --show-toplevel", containing_dir)
   if git_show_toplevel.code ~= 0 then
-    print("No git repo found for " .. containing_dir .. "/alire.toml")
+    print("Warning: No git repo found for " .. containing_dir .. "/alire.toml")
     return
   end
   local repo_root = git_show_toplevel.stdout:sub(1,-2)
@@ -359,7 +359,7 @@ local function publish_toml_file(alire_toml, skip_project_push)
     end
     new_file:close()
     local alire_index_commit_msg = repo_id .. ' ' .. new_version
-    print("Committing in " .. alire_community_repo_path .. " with message: " .. alire_index_commit_msg)
+    -- print("Committing in " .. alire_community_repo_path .. " with message: " .. alire_index_commit_msg)
     git("add .", alire_community_repo_path)
     git_arraycmd({'commit', '-m', repo_id .. ' ' .. new_version}, alire_community_repo_path)
     -- TODO maybe an option to not push to release repo?
@@ -375,7 +375,7 @@ local function publish(skip_project_push)
   -- look upward from the current file for alire.toml
   local alire_toml = find_alire_toml_file()
   if alire_toml == nil then
-    print("No alire.toml found above " .. vim.api.nvim_buf_get_name(0))
+    print("Warning: No alire.toml found above " .. vim.api.nvim_buf_get_name(0))
     return
   end
   publish_toml_file(alire_toml, skip_project_push==1)
